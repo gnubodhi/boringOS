@@ -35,6 +35,18 @@ As such, boringOS will not include empathetic or emotion-simulating AI models un
 
 (Well... most people.)
 
+..but seriously:
+
+boringOS is meant to be fun, personal, and ethical.
+
+I do not support the use of boringOS to generate, store, distribute, or facilitate abuse material in any form — including CSAM, non-consensual content, or anything that violates basic human dignity.
+
+Additionally:
+
+Models trained on abuse-related datasets should not be loaded or run via boringOS.
+
+If you modify the system to enable or support this kind of usage, you are in violation of the copyright and your permission to use boringOS is revoked.
+
 ---
 
 ## 🪛 Build Instructions
