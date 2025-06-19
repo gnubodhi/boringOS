@@ -88,3 +88,7 @@ In short: you boot it, you deal with it.
 ### Disclaimer of Long-Term Maintenance  
 This project may enter deep sleep mode at any time.  
 No guarantees, no roadmap — only boredom-fueled creativity.
+
+⚠️ Ethical Use Required:
+You must read ETHICS.md before using or modifying boringOS.
+Violation of these terms voids your right to use this project.
