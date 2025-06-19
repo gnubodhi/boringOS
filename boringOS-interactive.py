@@ -1,75 +1,72 @@
 #!/usr/bin/env python3
 
-import os
 import subprocess
+import os
 
-MOUNT_DIR = "/mnt/boringos"
+def run(cmd, chroot=False, chroot_path="/mnt/gentoo"):
+    if chroot:
+        cmd = f'chroot {chroot_path} /bin/bash -c "source /etc/profile && {cmd}"'
+    print(f"📦 Running: {cmd}")
+    subprocess.run(cmd, shell=True, check=True)
 
-print("👋 Welcome to the boringOS setup environment")
-print("This script installs base components and offers optional feature sets.\n")
+def mount_chroot_env(mount_path="/mnt/gentoo"):
+    subprocess.run(["mount", "--types", "proc", "/proc", f"{mount_path}/proc"], check=True)
+    subprocess.run(["mount", "--rbind", "/sys", f"{mount_path}/sys"], check=True)
+    subprocess.run(["mount", "--make-rslave", f"{mount_path}/sys"], check=True)
+    subprocess.run(["mount", "--rbind", "/dev", f"{mount_path}/dev"], check=True)
+    subprocess.run(["mount", "--make-rslave", f"{mount_path}/dev"], check=True)
 
-# Ensure necessary directories are mounted
-def mount_system_dirs():
-    print("🔧 Mounting proc, sys, and dev if not already mounted...")
-    mounts = {
-        "proc": ["--types", "proc", "/proc"],
-        "sys": ["--rbind", "/sys"],
-        "dev": ["--rbind", "/dev"]
-    }
-    for key, args in mounts.items():
-        target = os.path.join(MOUNT_DIR, key)
-        if not os.path.ismount(target):
-            subprocess.run(["sudo", "mount"] + args + [target], check=True)
-            subprocess.run(["sudo", "mount", "--make-rslave", target], check=True)
+def install_kernel_and_bootloader():
+    run("emerge --quiet gentoo-kernel", chroot=True)
+    run("bootctl install", chroot=True)
 
-# Run a command inside the chroot
-def chroot_run(command):
-    subprocess.run(["sudo", "chroot", MOUNT_DIR, "/bin/bash", "-c", f"source /etc/profile && {command}"], check=True)
+def select_and_install_sets():
+    available_sets = [
+        "media-server",
+        "desktop",
+        "steam",
+        "kodi",
+        "gnome",
+        "kde",
+        "nvidia-drivers",
+        "raid",
+    ]
+    print("\n📦 Available package sets:")
+    for i, s in enumerate(available_sets):
+        print(f"  {i+1}. {s}")
+    selected = input("\nEnter the numbers of the sets to install (comma-separated): ")
+    indices = [int(x.strip()) - 1 for x in selected.split(",") if x.strip().isdigit()]
+    selected_sets = [available_sets[i] for i in indices if 0 <= i < len(available_sets)]
+    for s in selected_sets:
+        run(f"emerge @{s}", chroot=True)
 
-# Install gentoo-kernel
-def install_kernel():
-    print("🧬 Installing gentoo-kernel...")
-    chroot_run("emerge --sync && emerge --ask gentoo-kernel")
+def finalize_system():
+    username = input("Enter your desired username: ").strip()
+    timezone = input("Enter your timezone (e.g., Australia/Brisbane): ").strip()
 
-# Install systemd-boot
-def install_bootloader():
-    print("🧢 Installing systemd-boot to EFI partition...")
-    chroot_run("bootctl install")
+    run(f"echo 'boringos' > /etc/hostname", chroot=True)
+    run(f"ln -sf /usr/share/zoneinfo/{timezone} /etc/localtime", chroot=True)
+    run("echo 'en_AU.UTF-8 UTF-8' > /etc/locale.gen", chroot=True)
+    run("locale-gen", chroot=True)
+    run("echo 'LANG=\"en_AU.UTF-8\"' > /etc/env.d/02locale", chroot=True)
+    run("env-update && source /etc/profile", chroot=True)
 
-# Interactive selection of optional sets
-def select_feature_sets():
-    sets = {
-        "1": ("media-server", "📦 Installing media-server set"),
-        "2": ("desktop-base", "🖥️  Installing desktop-base set"),
-        "3": ("steam-frontend", "🎮 Installing steam-frontend set"),
-        "4": ("gnome-desktop", "🧬 Installing gnome-desktop set"),
-        "5": ("kde-desktop", "🎨 Installing kde-desktop set"),
-        "6": ("raid-tools", "🧰 Installing raid-tools set"),
-        "7": ("boringos-tools", "🔧 Installing boringOS core tools")
-    }
+    run(f"useradd -m -G wheel,audio,video,plugdev -s /bin/bash {username}", chroot=True)
+    print(f"📛 Set password for {username}:")
+    run(f"passwd {username}", chroot=True)
 
-    print("🎛️  Optional Setup Modules")
-    for key, (name, _) in sets.items():
-        print(f" {key}) {name}")
-    print(" 0) Done\n")
+    run("emerge --quiet app-admin/sudo", chroot=True)
+    run("echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel", chroot=True)
 
-    selected = input("Enter your choices (e.g. 1 3 7): ").split()
+    run("systemctl enable NetworkManager", chroot=True)
 
-    for choice in selected:
-        if choice == "0":
-            break
-        elif choice in sets:
-            name, msg = sets[choice]
-            print(msg)
-            chroot_run(f"emerge --ask @{name}")
-        else:
-            print(f"⚠️  Unknown option: {choice}")
+def main():
+    mount_chroot_env()
+    install_kernel_and_bootloader()
+    select_and_install_sets()
+    finalize_system()
+
+    print("🚀 boringOS setup complete. You can now exit chroot and reboot.")
 
 if __name__ == "__main__":
-    mount_system_dirs()
-    install_kernel()
-    install_bootloader()
-    select_feature_sets()
-
-    print("✅ Feature set installation complete. You may now continue configuring your system.")
-    print("Tip: Run additional inside-chroot setup scripts or emerge packages as needed.")
+    main()
