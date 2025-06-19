@@ -83,3 +83,23 @@ But if you cross the line into unethical or abusive territory, this project does
 Go build something else.
 
 With boredom and respect,Daniel Pay — 2025
+
+🔄 Updates to This Document
+This ETHICS.md file may be updated over time to reflect new tools, capabilities, or ethical considerations.
+
+By using or distributing boringOS under the boringOS name or copyright, you agree to the terms described in this document as they exist at the time of use.
+
+You are not automatically bound to future changes.
+
+However, continued use of the boringOS name or copyright requires that you agree to the most recent version of this document.
+
+If you disagree with future revisions, you must:
+
+Stop using the boringOS name and branding
+
+Fork the project under a new name
+
+Acknowledge that you are no longer using boringOS under its original terms
+
+boringOS remains © Daniel Pay.
+All permissions to use or extend boringOS depend on alignment with this ethical framework.
