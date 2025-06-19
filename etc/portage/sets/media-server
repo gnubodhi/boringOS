@@ -1,0 +1,8 @@
+media-video/pipewire
+media-video/wireplumber
+media-plugins/alsa-plugins
+media-video/ffmpeg
+media-video/mpv
+net-fs/samba
+net-misc/curl
+net-misc/rsync
