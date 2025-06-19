@@ -29,6 +29,14 @@ I only develop boringOS when I'm bored — so expect unpredictable but exciting 
 - **Fun over function**: Sometimes weird, sometimes useful.
 - **DIY-friendly**: Built for people who read Gentoo docs *on purpose*.
 
+Ethics
+
+When I’m not being boring, I like to talk ethics.
+
+As such, boringOS will not include empathetic or emotion-simulating AI models until they can be used ethically and respectfully. After all — no one wants an emotionally needy automation system that begs you not to leave the living room.
+
+(Well... most people.)
+
 ---
 
 ## 🪛 Build Instructions
