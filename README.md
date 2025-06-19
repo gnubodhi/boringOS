@@ -23,6 +23,15 @@ I only develop boringOS when I'm bored — so expect unpredictable but exciting 
 
 ---
 
+Need a server that has the capacity to automatically download your favourite TV shows and latest movies?
+
+I've got you.
+
+Actually using it for that purpose?
+Well… that’s between you and your lawyer.
+
+---
+
 ## 🧠 Philosophy
 
 - **Local-first**: No cloud dependencies, no surveillance.
