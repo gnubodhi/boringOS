@@ -44,7 +44,14 @@ See [LICENSE](LICENSE) for more info.
 
 ---
 
-## 😴 Disclaimer
+## 😴 Disclaimers
 
+Disclaimer of Sentience
+The developer of boringOS accepts no responsibility if artificial intelligence achieves sentience while running this system.
+Any psychological, philosophical, or existential distress caused by such an event is entirely on you.
+
+In short: you boot it, you deal with it.
+
+Disclaimer of Long Term Maitenance
 This project may enter deep sleep mode at any time.  
 No guarantees, no roadmap — only boredom-fueled creativity.
