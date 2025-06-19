@@ -61,6 +61,8 @@ Additionally:
 MIT © 2025 Daniel Pay  
 See [LICENSE](LICENSE) for more info.
 
+Basically I own the copyright but the source is free. After all, ChatGPT did the heavy lifting..
+
 ---
 
 ## 😴 Disclaimers
