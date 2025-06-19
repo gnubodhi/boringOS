@@ -33,19 +33,20 @@ When I’m not being boring, I like to talk ethics.
 
 As such, boringOS will not include empathetic or emotion-simulating AI models until they can be used ethically and respectfully. After all — no one wants an emotionally needy automation system that begs you not to leave the living room.
 
-(Well... most people.)
+(*Well... most people.*)
 
-..but seriously:
+---
+
+## 🚫 Ethical Use
 
 boringOS is meant to be fun, personal, and ethical.
 
-I do not support the use of boringOS to generate, store, distribute, or facilitate abuse material in any form — including CSAM, non-consensual content, or anything that violates basic human dignity.
+I do **not** support the use of boringOS to generate, store, distribute, or facilitate abuse material in any form — including CSAM, non-consensual content, or anything that violates basic human dignity.
 
 Additionally:
 
-Models trained on abuse-related datasets should not be loaded or run via boringOS.
-
-If you modify the system to enable or support this kind of usage, you are in violation of the copyright and your permission to use boringOS is revoked.
+- Models trained on abuse-related datasets should **not** be loaded or run via boringOS.
+- If you modify the system to enable or support this kind of usage, **you are in violation of the copyright**, and your permission to use boringOS is revoked.
 
 ---
 
@@ -64,12 +65,12 @@ See [LICENSE](LICENSE) for more info.
 
 ## 😴 Disclaimers
 
-Disclaimer of Sentience
-The developer of boringOS accepts no responsibility if artificial intelligence achieves sentience while running this system.
+### Disclaimer of Sentience  
+The developer of boringOS accepts no responsibility if artificial intelligence achieves sentience while running this system.  
 Any psychological, philosophical, or existential distress caused by such an event is entirely on you.
 
 In short: you boot it, you deal with it.
 
-Disclaimer of Long Term Maitenance
+### Disclaimer of Long-Term Maintenance  
 This project may enter deep sleep mode at any time.  
 No guarantees, no roadmap — only boredom-fueled creativity.
