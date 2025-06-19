@@ -89,6 +89,18 @@ In short: you boot it, you deal with it.
 This project may enter deep sleep mode at any time.  
 No guarantees, no roadmap — only boredom-fueled creativity.
 
-⚠️ Ethical Use Required:
-You must read ETHICS.md before using or modifying boringOS.
-Violation of these terms voids your right to use this project.
+⚖️ Ethics & Usage Policy
+boringOS is free and open — you’re welcome to use the system however you like as long as it’s legal.
+
+However:
+
+🧠 The default tools and models shipped with boringOS reflect my ethical standards.
+If you disagree with these standards, you may not claim your modified system is “boringOS”.
+
+See ETHICS.md for the full guidelines on:
+
+What is and isn’t supported
+
+Why your license may be revoked
+
+How to responsibly use AI, automation, and synthetic media
