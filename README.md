@@ -58,10 +58,13 @@ Additionally:
 
 ## 📜 License
 
-MIT © 2025 Daniel Pay  
-See [LICENSE](LICENSE) for more info.
+MIT © 2025 Daniel Pay
+See LICENSE for more info.
 
-Basically I own the copyright but the source is free. After all, ChatGPT did the heavy lifting..
+Basically:
+I hold the copyright,
+you can use the code freely,
+and let’s be real — ChatGPT did the heavy lifting.
 
 ---
 
