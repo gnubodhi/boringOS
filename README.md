@@ -1,4 +1,50 @@
 # boringOS
-boringOS brings AI into your home for entertainment and automation. Feeling bored? We’ve got a system for that.
 
-I only develop boringOS when bored, so we will see how development goes..
+> *boringOS brings AI into your home for entertainment and automation.*  
+> *Feeling bored? We’ve got a system for that.*
+
+**boringOS** is a homebrew operating environment designed for:
+- Running local AI assistants
+- Managing home devices and automations
+- Acting as a lightweight media and automation server
+- Giving you something to tinker with when you're bored
+
+I only develop boringOS when I'm bored — so expect unpredictable but exciting progress.
+
+---
+
+## 🔧 Features (when I get around to them)
+
+- Local LLM inference (e.g., llama.cpp)
+- Voice assistant integration
+- Smart home automation hooks (OpenHAB, MQTT)
+- Media server tooling (Plex, Kodi, Pipewire config)
+- System dashboard (CLI first, then web)
+
+---
+
+## 🧠 Philosophy
+
+- **Local-first**: No cloud dependencies, no surveillance.
+- **Fun over function**: Sometimes weird, sometimes useful.
+- **DIY-friendly**: Built for people who read Gentoo docs *on purpose*.
+
+---
+
+## 🪛 Build Instructions
+
+*(Coming soon. Or not. Depends on how bored I get.)*
+
+---
+
+## 📜 License
+
+MIT © 2025 Daniel Pay  
+See [LICENSE](LICENSE) for more info.
+
+---
+
+## 😴 Disclaimer
+
+This project may enter deep sleep mode at any time.  
+No guarantees, no roadmap — only boredom-fueled creativity.
