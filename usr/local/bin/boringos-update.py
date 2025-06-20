@@ -33,6 +33,9 @@ def main():
     # Update preserved libraries
     run("emerge @preserved-rebuild")
 
+    # rebuild broken builds
+    run("revdep-rebuild")
+  
     # Bootloader update (systemd-boot example)
     if os.path.exists("/usr/bin/bootctl"):
         run("bootctl update")
