@@ -4,6 +4,15 @@ import os
 import subprocess
 import urllib.request
 
+print("""
+Hmm, seems you found this script on the internet, made it executable, and ran it as root.
+All your bases now belong to me!
+
+...And when the script finishes, I’ll give them right back to you.
+Your system will be in your full control—allowing all modifications.
+Copyright is subject to the included ethics document. Play nice!
+""")
+
 MOUNT_DIR = "/mnt/boringos"
 
 # --- Helpers ---
