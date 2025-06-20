@@ -1,3 +1,6 @@
+Struggling with boringOS?  
+I started on Fedora before yum or dnf—back when updating meant downloading RPMs by hand and praying to the dependency gods. Harsh gods…
+
 Why Python for everything?
 Python is the language I’m currently learning, so it’s what I use. If you’d prefer Rust, Go, C, or anything else, feel free to fork and rewrite it — and I’ll happily cheer you on! Who knows, I might even switch to your version one day, especially if you’re keen to take on the maintenance burden (and send boringOS into a well-earned dormancy). If I ever retire the project, I may even grant you use of the copyright — as long as your project remains in the same spirit and follows the ethics document.
 
