@@ -3,3 +3,6 @@ Python is the language I’m currently learning, so it’s what I use. If you’
 
 Why MIT?
 Well, ChatGPT gave me the code freely to use as I please, so MIT felt like a natural fit. I wanted others to have the same freedom with boringOS — use it, modify it, share it, no strings attached (other than a nod to the ethics doc and a bit of credit where it’s due).
+
+Q: This project includes external package installers. Should I trust you?
+A: Only if you’re comfortable with the risks! If you don’t trust me to provide packages, you definitely shouldn’t make this script executable or run it.
