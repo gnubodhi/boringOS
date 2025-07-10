@@ -2,122 +2,91 @@
 
 import os
 import subprocess
-import urllib.request
 
 print("""
-Hmm, seems you found this script on the internet, made it executable, and ran it as root.
-All your bases now belong to me!
+🧽 Welcome to boringOS Ubuntu Setup Wizard
 
-...And when the script finishes, I’ll give them right back to you.
-Your system will be in your full control—allowing all modifications.
-Copyright is subject to the included ethics document. Play nice!
+This will:
+- Format a drive
+- Bootstrap Ubuntu using debootstrap
+- Set up chroot environment
+
+Only proceed if you know what you’re doing.
 """)
 
 MOUNT_DIR = "/mnt/boringos"
+UBUNTU_RELEASE = "noble"  # You can change this to focal, jammy, etc.
+ARCH = "amd64"
+MIRROR = "http://archive.ubuntu.com/ubuntu"
 
 # --- Helpers ---
-def run_command(cmd):
-    print(f"🔧 Running: {cmd}")
+def run(cmd):
+    print(f"🔧 {cmd}")
     subprocess.run(cmd, shell=True, check=True)
 
 def list_disks():
     print("📦 Detected Drives:")
-    run_command("lsblk -dpno NAME,SIZE,MODEL,TYPE | grep -v 'loop\|sr\|zram'")
+    run("lsblk -dpno NAME,SIZE,MODEL,TYPE | grep -v 'loop\|sr\|zram'")
 
 def select_disk():
     output = subprocess.check_output("lsblk -dpno NAME,TYPE | grep 'disk' | head -n 1", shell=True)
     return output.decode().split()[0]
 
 def format_disk(disk):
-    print(f"🧨 WARNING: All data on {disk} will be lost.")
-    confirm = input("Are you REALLY sure you want to format this disk? Type 'yes': ")
+    print(f"🧨 WARNING: Formatting {disk}. This erases all data.")
+    confirm = input("Type 'yes' to continue: ")
     if confirm != "yes":
         print("❌ Cancelled.")
         exit(1)
 
-    run_command(f"sudo umount {disk}* || true")
-    run_command(f"sudo parted --script {disk} mklabel gpt \
-                mkpart ESP fat32 1MiB 513MiB set 1 boot on \
-                mkpart primary ext4 513MiB 100%")
-
-    run_command(f"sudo mkfs.vfat -F32 {disk}1")
-    run_command(f"sudo mkfs.ext4 -F {disk}2")
+    run(f"sudo umount {disk}* || true")
+    run(f"sudo parted --script {disk} mklabel gpt "
+        "mkpart ESP fat32 1MiB 513MiB set 1 boot on "
+        "mkpart primary ext4 513MiB 100%")
+    run(f"sudo mkfs.vfat -F32 {disk}1")
+    run(f"sudo mkfs.ext4 -F {disk}2")
 
     os.makedirs(MOUNT_DIR, exist_ok=True)
-    run_command(f"sudo mount {disk}2 {MOUNT_DIR}")
+    run(f"sudo mount {disk}2 {MOUNT_DIR}")
     os.makedirs(f"{MOUNT_DIR}/boot", exist_ok=True)
-    run_command(f"sudo mount {disk}1 {MOUNT_DIR}/boot")
+    run(f"sudo mount {disk}1 {MOUNT_DIR}/boot")
 
 def create_swapfile(path, size_gb=2):
     swap_path = os.path.join(path, "swapfile")
-    run_command(f"sudo fallocate -l {size_gb}G {swap_path}")
-    run_command(f"sudo chmod 600 {swap_path}")
-    run_command(f"sudo mkswap {swap_path}")
-    run_command(f"sudo swapon {swap_path}")
+    run(f"sudo fallocate -l {size_gb}G {swap_path}")
+    run(f"sudo chmod 600 {swap_path}")
+    run(f"sudo mkswap {swap_path}")
+    run(f"sudo swapon {swap_path}")
 
-def choose_stage3_variant():
-    print("\n🧬 Choose your stage3 variant:")
-    print("1) systemd (standard)")
-    print("2) hardened + systemd (extra security)")
-    choice = input("Enter choice [1/2]: ").strip()
-    return "hardened+systemd" if choice == "2" else "systemd"
+def debootstrap_ubuntu():
+    print("📥 Bootstrapping Ubuntu...")
+    run(f"sudo debootstrap --arch={ARCH} {UBUNTU_RELEASE} {MOUNT_DIR} {MIRROR}")
 
-def get_latest_stage3_filename(variant):
-    base_url = "https://distfiles.gentoo.org/releases/amd64/autobuilds"
-    variant_path = f"current-stage3-amd64-{variant}"
-    latest_txt_url = f"{base_url}/{variant_path}/latest-stage3-amd64-{variant}.txt"
+def mount_special_fs():
+    run(f"sudo mount --types proc /proc {MOUNT_DIR}/proc")
+    run(f"sudo mount --rbind /sys {MOUNT_DIR}/sys")
+    run(f"sudo mount --make-rslave {MOUNT_DIR}/sys")
+    run(f"sudo mount --rbind /dev {MOUNT_DIR}/dev")
+    run(f"sudo mount --make-rslave {MOUNT_DIR}/dev")
 
-    with urllib.request.urlopen(latest_txt_url) as response:
-        latest_info = response.read().decode("utf-8").strip()
-
-    latest_filename = latest_info.split()[0]
-    return f"{base_url}/{variant_path}/{latest_filename}"
-
-def download_stage3(variant):
-    url = get_latest_stage3_filename(variant)
-    filename = url.split("/")[-1]
-    run_command(f"wget -c {url}")
-    return filename
-
-def extract_stage3(mount_dir, tarball):
-    run_command(f"sudo tar xpf {tarball} -C {mount_dir} --xattrs-include='*.*' --numeric-owner")
-
-def copy_portage_config(mount_dir):
-    print("📁 Applying Git-based Portage configuration...")
-    os.makedirs(f"{mount_dir}/etc/portage/repos.conf", exist_ok=True)
-    run_command(f"sudo cp ./etc/portage/repos.conf/gentoo.conf {mount_dir}/etc/portage/repos.conf/")
-
-def mount_special_fs(mount_dir):
-    run_command(f"sudo mount --types proc /proc {mount_dir}/proc")
-    run_command(f"sudo mount --rbind /sys {mount_dir}/sys")
-    run_command(f"sudo mount --make-rslave {mount_dir}/sys")
-    run_command(f"sudo mount --rbind /dev {mount_dir}/dev")
-    run_command(f"sudo mount --make-rslave {mount_dir}/dev")
-
-def enter_chroot(mount_dir):
-    print("..hmm no package repository was added. This will take a bit.. Told you.. Boring.")
-    print("🛠️  Time to chroot and compile. Boring is a feature, not a bug.")
-    run_command(f"sudo chroot {mount_dir} /bin/bash")
+def chroot_into_system():
+    print("🛠️  Chrooting into new system...")
+    run(f"sudo chroot {MOUNT_DIR} /bin/bash")
 
 # --- Main ---
-print("🧽 Welcome to boringOS setup wizard")
 list_disks()
-
 DEFAULT_DRIVE = select_disk()
-print(f"\n👉 Default drive candidate: {DEFAULT_DRIVE}")
-confirm = input("Can I format this drive for boringOS? [y/N] ")
+print(f"👉 Default drive candidate: {DEFAULT_DRIVE}")
+confirm = input("Use this drive for boringOS install? [y/N]: ")
 
 if confirm.lower() == 'y':
     format_disk(DEFAULT_DRIVE)
 else:
-    custom = input("Enter drive to partition manually (e.g. /dev/sda): ")
-    run_command(f"sudo cfdisk {custom}")
+    custom = input("Enter disk manually (e.g. /dev/sdX): ")
+    run(f"sudo cfdisk {custom}")
     exit(0)
 
 create_swapfile(MOUNT_DIR)
-variant = choose_stage3_variant()
-tarball = download_stage3(variant)
-extract_stage3(MOUNT_DIR, tarball)
-copy_portage_config(MOUNT_DIR)
-mount_special_fs(MOUNT_DIR)
-enter_chroot(MOUNT_DIR)
+debootstrap_ubuntu()
+mount_special_fs()
+chroot_into_system()
