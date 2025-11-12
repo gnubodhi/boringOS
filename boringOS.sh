@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # Minimal Desktop systemd Profile (Interactive)
 # Debian/Ubuntu: services, boot quieting, Plymouth, Flatpak migration, Waydroid,
-# Security (AppArmor+UFW), Privoxy, Steam, MS-compat (Samba/NTFS/exFAT/FAT32/Wine/DOSBox/CoreFonts),
+# Security (AppArmor+UFW), Privoxy, MS-compat (Samba/NTFS/exFAT/FAT32/Wine/DOSBox/CoreFonts),
 # Snap (single prompt), Ubuntu-like Appearance (Fonts+Theme)
-# Minimally tested on Debian 13
+# Tested on Debian 13
+#
+# NOTE: For proprietary or copyrighted applications and fonts (e.g. Steam, MS Core Fonts),
+#       please review the repository's LICENSE file and the vendor EULAs before installing.
 
 set -o nounset
 set -o pipefail
@@ -59,7 +62,7 @@ choose_snap_mode() {
   local ans
   while true; do
     echo "Snap: [E]nable (install snapd+plugin), [R]emove (purge snapd), [K]eep (no changes)"
-    read -r -p "Choose E/R/K [default: K]: " ans || ans=""
+    read -r -p "Choose [E]nable/[R]remove/[K]eep [default: K]: " ans || ans=""
     ans="${ans,,}"
     [[ -z "$ans" || "$ans" == "k" ]] && { echo "keep"; return 0; }
     [[ "$ans" == "e" ]] && { echo "enable"; return 0; }
@@ -184,7 +187,7 @@ enable_i386_multiarch() {
 }
 
 debian_enable_components_if_needed() {
-  # Ensure contrib non-free non-free-firmware for Debian (needed for fonts/steam firmware, etc.)
+  # Ensure contrib non-free non-free-firmware for Debian (needed for fonts/firmware, etc.)
   [[ "$OS_ID" != "debian" ]] && return 0
   if ! grep -Eq '\scontrib(\s|$)' /etc/apt/sources.list; then
     echo "  ! Debian: enabling 'contrib non-free non-free-firmware' in /etc/apt/sources.list"
@@ -368,28 +371,6 @@ apply_snap_choice() {
   esac
 }
 
-# ------------------------------ Steam repo + install ------------------------------
-
-install_steam() {
-  print_header "Steam setup"
-  ensure_base_repo_tools
-  enable_i386_multiarch
-  if [[ "$OS_ID" == "ubuntu" ]]; then
-    ensure_packages_list software-properties-common >/dev/null 2>&1 || true
-    add-apt-repository -y multiverse >/dev/null 2>&1 || true
-    apt_update_quiet
-    ensure_packages_list steam >/dev/null 2>&1 || ensure_packages_list steam-installer
-  else
-    debian_enable_components_if_needed
-    local name="steam"; local key="https://repo.steampowered.com/steam/archive/stable/steam.gpg"
-    local repo="https://repo.steampowered.com/steam/ stable steam"
-    add_apt_repo "$name" "$key" "$repo"
-    apt_update_quiet
-    ensure_packages_list steam-launcher || ensure_packages_list steam
-  fi
-  echo "  - Steam installed. (i386 multiarch enabled)"
-}
-
 # ------------------------------ Microsoft-compatible stack ------------------------------
 
 install_ms_compat() {
@@ -398,10 +379,11 @@ install_ms_compat() {
   enable_i386_multiarch
   local fs_pkgs=(samba cifs-utils ntfs-3g exfatprogs dosfstools mtools)
   local wine_pkgs=(wine winetricks)
-  local dos_pkgs=(dosbox)
   local fonts_pkgs=(ttf-mscorefonts-installer cabextract)
-  ensure_packages_list "${fs_pkgs[@]}" "${wine_pkgs[@]}" "${dos_pkgs[@]}" "${fonts_pkgs[@]}" >/dev/null 2>&1 || true
-  echo "  - Samba tools, filesystem support, Wine, DOSBox, and MS Core Fonts installed."
+  ensure_packages_list "${fs_pkgs[@]}" "${wine_pkgs[@]}" "${fonts_pkgs[@]}" >/dev/null 2>&1 || true
+  echo "  - Samba tools, filesystem support, Wine, and MS Core Fonts installed."
+  echo "    - Some components (e.g. MS Core Fonts) are proprietary or copyrighted."
+  echo "      Please review the relevant EULAs and this project's LICENSE file."
 }
 
 # ------------------------------ Ubuntu-like Appearance ------------------------------
@@ -484,7 +466,12 @@ main() {
   print_header "Minimal Desktop systemd Profile (Interactive)"
   echo "This sets up a lean GNOME desktop: services, quieter boot, Plymouth,"
   echo "optional Flatpak migration, Waydroid, security hardening, plus requested extras."
-  echo; echo "Press Enter to accept defaults shown in brackets."; echo
+  echo
+  echo "For proprietary or copyrighted apps/fonts (e.g. Steam via Flatpak, MS Core Fonts),"
+  echo "please review this project's LICENSE file and the vendor EULAs."
+  echo
+  echo "Press Enter to accept defaults shown in brackets."
+  echo
 
   # Defaults
   local d_networkmanager=true
@@ -506,7 +493,6 @@ main() {
 
   # NEW defaults for extra asks
   local d_privoxy=false
-  local d_install_steam=true
   local d_ms_compat=true
   local d_ubuntu_look=true # Ubuntu-like appearance (fonts + Yaru)
 
@@ -604,9 +590,6 @@ main() {
   # Snap: ask ONCE (Enable / Remove / Keep)
   local snap_choice; snap_choice="$(choose_snap_mode)"
 
-  # Steam
-  local do_steam=false; yn "Install Steam (adds repo, enables i386)?" "$d_install_steam" && do_steam=true
-
   # MS-compatible stack
   local do_ms_compat=false; yn "Install Samba/NTFS/exFAT/FAT32 tools + Wine + DOSBox + MS Core Fonts?" "$d_ms_compat" && do_ms_compat=true
 
@@ -650,14 +633,16 @@ main() {
     print_header "Flatpak migration tips"
     echo "• Open GNOME Software → ‘Add-ons’ to confirm Flatpak is enabled."
     echo "• Browse apps in GNOME Software (they’ll prefer Flathub sources)."
-    echo "• CLI example: flatpak install flathub org.videolan.VLC"
+    echo "• CLI example (VLC):       flatpak install flathub org.videolan.VLC"
+    echo "• CLI example (Steam):     flatpak install flathub com.valvesoftware.Steam"
+    echo "    Steam and similar apps are proprietary; please review their EULAs"
+    echo "    as well as this project's LICENSE file before installing."
   fi
 
   # Extras
   $do_privoxy && configure_privoxy
   apply_snap_choice "$snap_choice"
   $do_ms_compat && install_ms_compat
-  $do_steam && install_steam
 
   # Waydroid
   if $do_waydroid; then
