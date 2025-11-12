@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+## Install Ubuntu using debootstrap - Untested
+
 import os
 import subprocess
 
