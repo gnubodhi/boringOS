@@ -1,6 +1,0 @@
-[Unit]
-Description=BoringOS Automated System Update
-
-[Service]
-Type=oneshot
-ExecStart=/usr/local/bin/boringos-update.py
