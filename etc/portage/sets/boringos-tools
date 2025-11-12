@@ -1,6 +1,0 @@
-sys-devel/llvm
-sys-devel/clang
-dev-libs/boost
-dev-util/hip
-sci-libs/rocBLAS
-sci-libs/MIOpen
