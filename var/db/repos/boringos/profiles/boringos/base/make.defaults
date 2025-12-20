@@ -1,9 +1,11 @@
 # boringOS base profile defaults (headless, systemd, glibc)
 
-# Target stable baseline instruction set for compatibility. Advanced flags are usually enabled at runtime.
+# Target stable baseline instruction set for compatibility.
 # If you will deploy only to one CPU, you can override in /etc/portage/make.conf.
+# boringOS uses an x86-64-v1 baseline. Performance-critical code paths are generally selected at runtime,
+# so this mainly affects compatibility. The default will move to x86-64-v3 once it is equally well tested.
+# These are defaults; feel free to change them.
 COMMON_FLAGS="-O2 -pipe -march=x86-64 -mtune=generic"
-
 CFLAGS="${COMMON_FLAGS}"
 CXXFLAGS="${COMMON_FLAGS}"
 FCFLAGS="${COMMON_FLAGS}"
