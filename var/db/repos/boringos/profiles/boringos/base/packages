@@ -1,3 +1,7 @@
+# Kernel packages
+*sys-kernel/gentoo-kernel-bin
+*sys-kernel/linux-firmware
+
 # Core baseline packages for a headless system.
 *sys-apps/systemd
 *sys-apps/dbus
