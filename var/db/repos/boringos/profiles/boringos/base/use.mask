@@ -1,0 +1,8 @@
+# Out of scope for base
+X
+wayland
+kde
+gnome
+pulseaudio
+pipewire
+alsa
