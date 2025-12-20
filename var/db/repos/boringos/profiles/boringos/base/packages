@@ -1,6 +1,7 @@
 # Kernel packages
 *sys-kernel/gentoo-kernel-bin
 *sys-kernel/linux-firmware
+*sys-firmware/intel-microcode
 
 # Core baseline packages for a headless system.
 *sys-apps/systemd
