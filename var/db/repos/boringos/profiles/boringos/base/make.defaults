@@ -1,0 +1,43 @@
+# boringOS base profile defaults (headless, systemd, glibc)
+
+# Target stable baseline instruction set for compatibility. Advanced flags are usually enabled at runtime.
+# If you will deploy only to one CPU, you can override in /etc/portage/make.conf.
+COMMON_FLAGS="-O2 -pipe -march=x86-64 -mtune=generic"
+
+CFLAGS="${COMMON_FLAGS}"
+CXXFLAGS="${COMMON_FLAGS}"
+FCFLAGS="${COMMON_FLAGS}"
+FFLAGS="${COMMON_FLAGS}"
+
+# Keep LTO off globally in base.
+# Users can enable per-package later.
+# LDFLAGS left unset by default to avoid surprises.
+
+# Portage features: prefer safety and determinism.
+FEATURES="${FEATURES} parallel-fetch buildpkg"
+
+# Use binary packages by default when you start a binhost later.
+# PKGDIR typically stays default unless you want a dedicated partition.
+# (Set BINHOST in /etc/portage/binrepos.conf when ready.)
+
+# Languages
+L10N="en en-AU"
+LC_MESSAGES=C
+
+# Avoid pulling GUI stacks by accident.
+# X/Wayland/audio are NOT part of base. Use another profile.
+USE="-X -wayland -kde -gnome -pulseaudio pipewire alsa"
+
+# Server/headless basics
+USE="${USE} acl caps dbus initramfs ipv6 ncurses policykit read-only-root seccomp ssl suid systemd"
+
+# Networking defaults: enable common tooling support without forcing a manager.
+USE="${USE} curl nss"
+
+# Hardware: keep generic. Use another profile for videocard support.
+VIDEO_CARDS=""
+INPUT_DEVICES=""
+
+# Python: pick modern but stable slot; can be overridden.
+PYTHON_SINGLE_TARGET="python3_12"
+PYTHON_TARGETS="python3_12"
